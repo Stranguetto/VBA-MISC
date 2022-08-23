@@ -1,0 +1,22 @@
+''''Habilitação da função sleep
+#If VBA7 Then
+Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+#Else
+Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+#End If
+'''''Habilitação da função sleep
+Sub excluinãoprodutivo()
+    Dim Row As String                                       '   variaveis
+    Dim strPassword As String: strPassword = 1234
+    ActiveSheet.Unprotect Password:=strPassword             '   Destrava planilha
+    Row = Application.InputBox("Qual a Linha?", "Row")      '   Informa a Linha e joga numa variavel
+    Row = Row & ":" & "                                   '   Concatena 2 variaveis para criar a Row em numeclatura valida"
+    Rows(Row).Select                                        '   Seleciona a linha conforma informada
+    Selection.Delete Shift:=xlUp                            '   Deleta a Linha
+    Range("I2:I30").ClearContents                           '   Limpa a coluna pra não gerar conflito
+    Sleep (200)                                             '   Intervalo de 0,2s na execução evita entruncamento de ações na mesma celula
+    Range("I2") = 1                                         '   Atribui o valor para o começo do autofill
+    Range("I2").Select                                      '   Seleciona a Célula de começo
+    Selection.AutoFill Destination:=Range("I2:I31"), Type:=xlFillSeries                                 '   Autofill
+    ActiveSheet.Protect Password:=strPassword, DrawingObjects:=True, Contents:=True, Scenarios:=True    '   Trava a Planilha
+End Sub
